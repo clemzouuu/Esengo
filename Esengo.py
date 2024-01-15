@@ -6,14 +6,16 @@ reserved = {
    'print' : 'PRINT',
     'else' : 'ELSE',
     'while' : 'WHILE',
-    'for' : 'FOR'
+    'for' : 'FOR',
+    'to' : 'TO',
+    'from' : 'FROM'
    }
 
 tokens = [
     'NAME','NUMBER','BRACERIGHT','BRACELEFT',
     'PLUS','MINUS','TIMES','DIVIDE',
     'LPAREN','RPAREN', 'COLON', 'AND', 'OR', 'EQUAL', 'EQUALS', 'LOWER','HIGHER',
-    'HIGHEROREQUAL','LOWEROREQUAL','DIFFERENT',
+    'HIGHEROREQUAL','LOWEROREQUAL','DIFFERENT'
     ]+list(reserved.values())
 
 # Tokens
@@ -107,7 +109,13 @@ def evalInst(t):
         while condition:
             evalInst(t[2])
             condition = evalExpr(t[1])
-
+    if t[0] == 'for':
+        start = evalExpr(t[2])
+        end = evalExpr(t[3])
+        var_name = t[1]
+        for value in range(start, end):
+            names[var_name] = value
+            evalInst(t[4])
 
 
 def evalExpr(t):
@@ -190,8 +198,12 @@ def p_statement_if_else(t):
     t[0] = ('if-else', t[2], t[4], t[8])
 
 def p_statement_while(t):
-    '''statement : WHILE expression BRACELEFT statement BRACERIGHT'''
+    'statement : WHILE expression BRACELEFT statement BRACERIGHT'
     t[0] = ('while', t[2], t[4])
+
+def p_statement_for(t):
+    'statement : FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT'
+    t[0] = ('for', t[2], t[4], t[6], t[8])
 
 
 def p_error(t):
@@ -219,12 +231,13 @@ parser = yacc.yacc()
 # 2 c -> instructions conditionnelles : implémenter si-alors-sinon
 #s='maVariable = 23041999; if maVariable < 1 {maVariable = 12;} else {maVariable = 0;}print(maVariable);'
 
-# 2 d -> structures itératives : implémenter le while
-s='maVariable = 10; while maVariable < 15 {maVariable = maVariable + 1;}print(maVariable);'
 
+# 2 d -> structures itératives : implémenter le while
+#s='maVariable = 10; while maVariable < 15 {maVariable = maVariable + 1;}print(maVariable);'
 
 
 # 2 d -> structures itératives : implémenter le for
+s='maVariable = 1; for i from 1 to 5 {maVariable = maVariable + 1;}print(maVariable);'
 
 
 

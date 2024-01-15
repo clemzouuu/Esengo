@@ -2,7 +2,6 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    FOR
     THEN
 
 Grammar
@@ -31,19 +30,21 @@ Rule 20    expression -> NAME
 Rule 21    statement -> IF expression BRACELEFT statement BRACERIGHT
 Rule 22    statement -> IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT
 Rule 23    statement -> WHILE expression BRACELEFT statement BRACERIGHT
+Rule 24    statement -> FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT
 
 Terminals, with rules where they appear
 
 AND                  : 10
-BRACELEFT            : 21 22 22 23
-BRACERIGHT           : 21 22 22 23
+BRACELEFT            : 21 22 22 23 24
+BRACERIGHT           : 21 22 22 23 24
 COLON                : 4 5
 DIFFERENT            : 16
 DIVIDE               : 17
 ELSE                 : 22
 EQUAL                : 4
 EQUALS               : 11
-FOR                  : 
+FOR                  : 24
+FROM                 : 24
 HIGHER               : 13
 HIGHEROREQUAL        : 14
 IF                   : 21 22
@@ -51,7 +52,7 @@ LOWER                : 12
 LOWEROREQUAL         : 15
 LPAREN               : 5 18
 MINUS                : 7
-NAME                 : 4 20
+NAME                 : 4 20 24
 NUMBER               : 19
 OR                   : 9
 PLUS                 : 6
@@ -59,15 +60,16 @@ PRINT                : 5
 RPAREN               : 5 18
 THEN                 : 
 TIMES                : 8
+TO                   : 24
 WHILE                : 23
 error                : 
 
 Nonterminals, with rules where they appear
 
 bloc                 : 1 2
-expression           : 4 5 6 6 7 7 8 8 9 9 10 10 11 11 12 12 13 13 14 14 15 15 16 16 17 17 18 21 22 23
+expression           : 4 5 6 6 7 7 8 8 9 9 10 10 11 11 12 12 13 13 14 14 15 15 16 16 17 17 18 21 22 23 24 24
 start                : 0
-statement            : 2 3 21 22 22 23
+statement            : 2 3 21 22 22 23 24
 
 Parsing method: LALR
 
@@ -82,11 +84,13 @@ state 0
     (21) statement -> . IF expression BRACELEFT statement BRACERIGHT
     (22) statement -> . IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT
     (23) statement -> . WHILE expression BRACELEFT statement BRACERIGHT
+    (24) statement -> . FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT
 
     NAME            shift and go to state 4
     PRINT           shift and go to state 5
     IF              shift and go to state 6
     WHILE           shift and go to state 7
+    FOR             shift and go to state 8
 
     start                          shift and go to state 1
     bloc                           shift and go to state 2
@@ -107,14 +111,16 @@ state 2
     (21) statement -> . IF expression BRACELEFT statement BRACERIGHT
     (22) statement -> . IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT
     (23) statement -> . WHILE expression BRACELEFT statement BRACERIGHT
+    (24) statement -> . FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT
 
     $end            reduce using rule 1 (start -> bloc .)
     NAME            shift and go to state 4
     PRINT           shift and go to state 5
     IF              shift and go to state 6
     WHILE           shift and go to state 7
+    FOR             shift and go to state 8
 
-    statement                      shift and go to state 8
+    statement                      shift and go to state 9
 
 state 3
 
@@ -124,6 +130,7 @@ state 3
     PRINT           reduce using rule 3 (bloc -> statement .)
     IF              reduce using rule 3 (bloc -> statement .)
     WHILE           reduce using rule 3 (bloc -> statement .)
+    FOR             reduce using rule 3 (bloc -> statement .)
     $end            reduce using rule 3 (bloc -> statement .)
 
 
@@ -131,14 +138,14 @@ state 4
 
     (4) statement -> NAME . EQUAL expression COLON
 
-    EQUAL           shift and go to state 9
+    EQUAL           shift and go to state 10
 
 
 state 5
 
     (5) statement -> PRINT . LPAREN expression RPAREN COLON
 
-    LPAREN          shift and go to state 10
+    LPAREN          shift and go to state 11
 
 
 state 6
@@ -161,11 +168,11 @@ state 6
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 11
+    expression                     shift and go to state 12
 
 state 7
 
@@ -186,13 +193,20 @@ state 7
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 15
+    expression                     shift and go to state 16
 
 state 8
+
+    (24) statement -> FOR . NAME FROM expression TO expression BRACELEFT statement BRACERIGHT
+
+    NAME            shift and go to state 17
+
+
+state 9
 
     (2) bloc -> bloc statement .
 
@@ -200,10 +214,11 @@ state 8
     PRINT           reduce using rule 2 (bloc -> bloc statement .)
     IF              reduce using rule 2 (bloc -> bloc statement .)
     WHILE           reduce using rule 2 (bloc -> bloc statement .)
+    FOR             reduce using rule 2 (bloc -> bloc statement .)
     $end            reduce using rule 2 (bloc -> bloc statement .)
 
 
-state 9
+state 10
 
     (4) statement -> NAME EQUAL . expression COLON
     (6) expression -> . expression PLUS expression
@@ -222,13 +237,13 @@ state 9
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 16
+    expression                     shift and go to state 18
 
-state 10
+state 11
 
     (5) statement -> PRINT LPAREN . expression RPAREN COLON
     (6) expression -> . expression PLUS expression
@@ -247,13 +262,13 @@ state 10
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 17
+    expression                     shift and go to state 19
 
-state 11
+state 12
 
     (21) statement -> IF expression . BRACELEFT statement BRACERIGHT
     (22) statement -> IF expression . BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT
@@ -270,22 +285,22 @@ state 11
     (16) expression -> expression . DIFFERENT expression
     (17) expression -> expression . DIVIDE expression
 
-    BRACELEFT       shift and go to state 18
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    BRACELEFT       shift and go to state 20
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
 
-state 12
+state 13
 
     (18) expression -> LPAREN . expression RPAREN
     (6) expression -> . expression PLUS expression
@@ -304,13 +319,13 @@ state 12
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 31
+    expression                     shift and go to state 33
 
-state 13
+state 14
 
     (19) expression -> NUMBER .
 
@@ -329,9 +344,10 @@ state 13
     DIVIDE          reduce using rule 19 (expression -> NUMBER .)
     COLON           reduce using rule 19 (expression -> NUMBER .)
     RPAREN          reduce using rule 19 (expression -> NUMBER .)
+    TO              reduce using rule 19 (expression -> NUMBER .)
 
 
-state 14
+state 15
 
     (20) expression -> NAME .
 
@@ -350,9 +366,10 @@ state 14
     DIVIDE          reduce using rule 20 (expression -> NAME .)
     COLON           reduce using rule 20 (expression -> NAME .)
     RPAREN          reduce using rule 20 (expression -> NAME .)
+    TO              reduce using rule 20 (expression -> NAME .)
 
 
-state 15
+state 16
 
     (23) statement -> WHILE expression . BRACELEFT statement BRACERIGHT
     (6) expression -> expression . PLUS expression
@@ -368,22 +385,29 @@ state 15
     (16) expression -> expression . DIFFERENT expression
     (17) expression -> expression . DIVIDE expression
 
-    BRACELEFT       shift and go to state 32
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    BRACELEFT       shift and go to state 34
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
 
-state 16
+state 17
+
+    (24) statement -> FOR NAME . FROM expression TO expression BRACELEFT statement BRACERIGHT
+
+    FROM            shift and go to state 35
+
+
+state 18
 
     (4) statement -> NAME EQUAL expression . COLON
     (6) expression -> expression . PLUS expression
@@ -399,22 +423,22 @@ state 16
     (16) expression -> expression . DIFFERENT expression
     (17) expression -> expression . DIVIDE expression
 
-    COLON           shift and go to state 33
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    COLON           shift and go to state 36
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
 
-state 17
+state 19
 
     (5) statement -> PRINT LPAREN expression . RPAREN COLON
     (6) expression -> expression . PLUS expression
@@ -430,22 +454,22 @@ state 17
     (16) expression -> expression . DIFFERENT expression
     (17) expression -> expression . DIVIDE expression
 
-    RPAREN          shift and go to state 34
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    RPAREN          shift and go to state 37
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
 
-state 18
+state 20
 
     (21) statement -> IF expression BRACELEFT . statement BRACERIGHT
     (22) statement -> IF expression BRACELEFT . statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT
@@ -454,15 +478,17 @@ state 18
     (21) statement -> . IF expression BRACELEFT statement BRACERIGHT
     (22) statement -> . IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT
     (23) statement -> . WHILE expression BRACELEFT statement BRACERIGHT
+    (24) statement -> . FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT
 
     NAME            shift and go to state 4
     PRINT           shift and go to state 5
     IF              shift and go to state 6
     WHILE           shift and go to state 7
+    FOR             shift and go to state 8
 
-    statement                      shift and go to state 35
+    statement                      shift and go to state 38
 
-state 19
+state 21
 
     (6) expression -> expression PLUS . expression
     (6) expression -> . expression PLUS expression
@@ -481,13 +507,13 @@ state 19
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 36
+    expression                     shift and go to state 39
 
-state 20
+state 22
 
     (7) expression -> expression MINUS . expression
     (6) expression -> . expression PLUS expression
@@ -506,13 +532,13 @@ state 20
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 37
+    expression                     shift and go to state 40
 
-state 21
+state 23
 
     (8) expression -> expression TIMES . expression
     (6) expression -> . expression PLUS expression
@@ -531,13 +557,13 @@ state 21
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 38
+    expression                     shift and go to state 41
 
-state 22
+state 24
 
     (9) expression -> expression OR . expression
     (6) expression -> . expression PLUS expression
@@ -556,13 +582,13 @@ state 22
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 39
+    expression                     shift and go to state 42
 
-state 23
+state 25
 
     (10) expression -> expression AND . expression
     (6) expression -> . expression PLUS expression
@@ -581,13 +607,13 @@ state 23
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 40
+    expression                     shift and go to state 43
 
-state 24
+state 26
 
     (11) expression -> expression EQUALS . expression
     (6) expression -> . expression PLUS expression
@@ -606,13 +632,13 @@ state 24
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 41
+    expression                     shift and go to state 44
 
-state 25
+state 27
 
     (12) expression -> expression LOWER . expression
     (6) expression -> . expression PLUS expression
@@ -631,13 +657,13 @@ state 25
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 42
+    expression                     shift and go to state 45
 
-state 26
+state 28
 
     (13) expression -> expression HIGHER . expression
     (6) expression -> . expression PLUS expression
@@ -656,13 +682,13 @@ state 26
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 43
+    expression                     shift and go to state 46
 
-state 27
+state 29
 
     (14) expression -> expression HIGHEROREQUAL . expression
     (6) expression -> . expression PLUS expression
@@ -681,13 +707,13 @@ state 27
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 44
+    expression                     shift and go to state 47
 
-state 28
+state 30
 
     (15) expression -> expression LOWEROREQUAL . expression
     (6) expression -> . expression PLUS expression
@@ -706,13 +732,13 @@ state 28
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 45
+    expression                     shift and go to state 48
 
-state 29
+state 31
 
     (16) expression -> expression DIFFERENT . expression
     (6) expression -> . expression PLUS expression
@@ -731,13 +757,13 @@ state 29
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 46
+    expression                     shift and go to state 49
 
-state 30
+state 32
 
     (17) expression -> expression DIVIDE . expression
     (6) expression -> . expression PLUS expression
@@ -756,13 +782,13 @@ state 30
     (19) expression -> . NUMBER
     (20) expression -> . NAME
 
-    LPAREN          shift and go to state 12
-    NUMBER          shift and go to state 13
-    NAME            shift and go to state 14
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
 
-    expression                     shift and go to state 47
+    expression                     shift and go to state 50
 
-state 31
+state 33
 
     (18) expression -> LPAREN expression . RPAREN
     (6) expression -> expression . PLUS expression
@@ -778,22 +804,22 @@ state 31
     (16) expression -> expression . DIFFERENT expression
     (17) expression -> expression . DIVIDE expression
 
-    RPAREN          shift and go to state 48
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    RPAREN          shift and go to state 51
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
 
-state 32
+state 34
 
     (23) statement -> WHILE expression BRACELEFT . statement BRACERIGHT
     (4) statement -> . NAME EQUAL expression COLON
@@ -801,15 +827,42 @@ state 32
     (21) statement -> . IF expression BRACELEFT statement BRACERIGHT
     (22) statement -> . IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT
     (23) statement -> . WHILE expression BRACELEFT statement BRACERIGHT
+    (24) statement -> . FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT
 
     NAME            shift and go to state 4
     PRINT           shift and go to state 5
     IF              shift and go to state 6
     WHILE           shift and go to state 7
+    FOR             shift and go to state 8
 
-    statement                      shift and go to state 49
+    statement                      shift and go to state 52
 
-state 33
+state 35
+
+    (24) statement -> FOR NAME FROM . expression TO expression BRACELEFT statement BRACERIGHT
+    (6) expression -> . expression PLUS expression
+    (7) expression -> . expression MINUS expression
+    (8) expression -> . expression TIMES expression
+    (9) expression -> . expression OR expression
+    (10) expression -> . expression AND expression
+    (11) expression -> . expression EQUALS expression
+    (12) expression -> . expression LOWER expression
+    (13) expression -> . expression HIGHER expression
+    (14) expression -> . expression HIGHEROREQUAL expression
+    (15) expression -> . expression LOWEROREQUAL expression
+    (16) expression -> . expression DIFFERENT expression
+    (17) expression -> . expression DIVIDE expression
+    (18) expression -> . LPAREN expression RPAREN
+    (19) expression -> . NUMBER
+    (20) expression -> . NAME
+
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
+
+    expression                     shift and go to state 53
+
+state 36
 
     (4) statement -> NAME EQUAL expression COLON .
 
@@ -817,26 +870,27 @@ state 33
     PRINT           reduce using rule 4 (statement -> NAME EQUAL expression COLON .)
     IF              reduce using rule 4 (statement -> NAME EQUAL expression COLON .)
     WHILE           reduce using rule 4 (statement -> NAME EQUAL expression COLON .)
+    FOR             reduce using rule 4 (statement -> NAME EQUAL expression COLON .)
     $end            reduce using rule 4 (statement -> NAME EQUAL expression COLON .)
     BRACERIGHT      reduce using rule 4 (statement -> NAME EQUAL expression COLON .)
 
 
-state 34
+state 37
 
     (5) statement -> PRINT LPAREN expression RPAREN . COLON
 
-    COLON           shift and go to state 50
+    COLON           shift and go to state 54
 
 
-state 35
+state 38
 
     (21) statement -> IF expression BRACELEFT statement . BRACERIGHT
     (22) statement -> IF expression BRACELEFT statement . BRACERIGHT ELSE BRACELEFT statement BRACERIGHT
 
-    BRACERIGHT      shift and go to state 51
+    BRACERIGHT      shift and go to state 55
 
 
-state 36
+state 39
 
     (6) expression -> expression PLUS expression .
     (6) expression -> expression . PLUS expression
@@ -867,18 +921,19 @@ state 36
     BRACELEFT       reduce using rule 6 (expression -> expression PLUS expression .)
     COLON           reduce using rule 6 (expression -> expression PLUS expression .)
     RPAREN          reduce using rule 6 (expression -> expression PLUS expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 6 (expression -> expression PLUS expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 6 (expression -> expression PLUS expression .) ]
   ! MINUS           [ reduce using rule 6 (expression -> expression PLUS expression .) ]
@@ -894,7 +949,7 @@ state 36
   ! DIVIDE          [ reduce using rule 6 (expression -> expression PLUS expression .) ]
 
 
-state 37
+state 40
 
     (7) expression -> expression MINUS expression .
     (6) expression -> expression . PLUS expression
@@ -925,18 +980,19 @@ state 37
     BRACELEFT       reduce using rule 7 (expression -> expression MINUS expression .)
     COLON           reduce using rule 7 (expression -> expression MINUS expression .)
     RPAREN          reduce using rule 7 (expression -> expression MINUS expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 7 (expression -> expression MINUS expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 7 (expression -> expression MINUS expression .) ]
   ! MINUS           [ reduce using rule 7 (expression -> expression MINUS expression .) ]
@@ -952,7 +1008,7 @@ state 37
   ! DIVIDE          [ reduce using rule 7 (expression -> expression MINUS expression .) ]
 
 
-state 38
+state 41
 
     (8) expression -> expression TIMES expression .
     (6) expression -> expression . PLUS expression
@@ -983,18 +1039,19 @@ state 38
     BRACELEFT       reduce using rule 8 (expression -> expression TIMES expression .)
     COLON           reduce using rule 8 (expression -> expression TIMES expression .)
     RPAREN          reduce using rule 8 (expression -> expression TIMES expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 8 (expression -> expression TIMES expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 8 (expression -> expression TIMES expression .) ]
   ! MINUS           [ reduce using rule 8 (expression -> expression TIMES expression .) ]
@@ -1010,7 +1067,7 @@ state 38
   ! DIVIDE          [ reduce using rule 8 (expression -> expression TIMES expression .) ]
 
 
-state 39
+state 42
 
     (9) expression -> expression OR expression .
     (6) expression -> expression . PLUS expression
@@ -1041,18 +1098,19 @@ state 39
     BRACELEFT       reduce using rule 9 (expression -> expression OR expression .)
     COLON           reduce using rule 9 (expression -> expression OR expression .)
     RPAREN          reduce using rule 9 (expression -> expression OR expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 9 (expression -> expression OR expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 9 (expression -> expression OR expression .) ]
   ! MINUS           [ reduce using rule 9 (expression -> expression OR expression .) ]
@@ -1068,7 +1126,7 @@ state 39
   ! DIVIDE          [ reduce using rule 9 (expression -> expression OR expression .) ]
 
 
-state 40
+state 43
 
     (10) expression -> expression AND expression .
     (6) expression -> expression . PLUS expression
@@ -1099,18 +1157,19 @@ state 40
     BRACELEFT       reduce using rule 10 (expression -> expression AND expression .)
     COLON           reduce using rule 10 (expression -> expression AND expression .)
     RPAREN          reduce using rule 10 (expression -> expression AND expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 10 (expression -> expression AND expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 10 (expression -> expression AND expression .) ]
   ! MINUS           [ reduce using rule 10 (expression -> expression AND expression .) ]
@@ -1126,7 +1185,7 @@ state 40
   ! DIVIDE          [ reduce using rule 10 (expression -> expression AND expression .) ]
 
 
-state 41
+state 44
 
     (11) expression -> expression EQUALS expression .
     (6) expression -> expression . PLUS expression
@@ -1157,18 +1216,19 @@ state 41
     BRACELEFT       reduce using rule 11 (expression -> expression EQUALS expression .)
     COLON           reduce using rule 11 (expression -> expression EQUALS expression .)
     RPAREN          reduce using rule 11 (expression -> expression EQUALS expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 11 (expression -> expression EQUALS expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 11 (expression -> expression EQUALS expression .) ]
   ! MINUS           [ reduce using rule 11 (expression -> expression EQUALS expression .) ]
@@ -1184,7 +1244,7 @@ state 41
   ! DIVIDE          [ reduce using rule 11 (expression -> expression EQUALS expression .) ]
 
 
-state 42
+state 45
 
     (12) expression -> expression LOWER expression .
     (6) expression -> expression . PLUS expression
@@ -1215,18 +1275,19 @@ state 42
     BRACELEFT       reduce using rule 12 (expression -> expression LOWER expression .)
     COLON           reduce using rule 12 (expression -> expression LOWER expression .)
     RPAREN          reduce using rule 12 (expression -> expression LOWER expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 12 (expression -> expression LOWER expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 12 (expression -> expression LOWER expression .) ]
   ! MINUS           [ reduce using rule 12 (expression -> expression LOWER expression .) ]
@@ -1242,7 +1303,7 @@ state 42
   ! DIVIDE          [ reduce using rule 12 (expression -> expression LOWER expression .) ]
 
 
-state 43
+state 46
 
     (13) expression -> expression HIGHER expression .
     (6) expression -> expression . PLUS expression
@@ -1273,18 +1334,19 @@ state 43
     BRACELEFT       reduce using rule 13 (expression -> expression HIGHER expression .)
     COLON           reduce using rule 13 (expression -> expression HIGHER expression .)
     RPAREN          reduce using rule 13 (expression -> expression HIGHER expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 13 (expression -> expression HIGHER expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 13 (expression -> expression HIGHER expression .) ]
   ! MINUS           [ reduce using rule 13 (expression -> expression HIGHER expression .) ]
@@ -1300,7 +1362,7 @@ state 43
   ! DIVIDE          [ reduce using rule 13 (expression -> expression HIGHER expression .) ]
 
 
-state 44
+state 47
 
     (14) expression -> expression HIGHEROREQUAL expression .
     (6) expression -> expression . PLUS expression
@@ -1331,18 +1393,19 @@ state 44
     BRACELEFT       reduce using rule 14 (expression -> expression HIGHEROREQUAL expression .)
     COLON           reduce using rule 14 (expression -> expression HIGHEROREQUAL expression .)
     RPAREN          reduce using rule 14 (expression -> expression HIGHEROREQUAL expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 14 (expression -> expression HIGHEROREQUAL expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 14 (expression -> expression HIGHEROREQUAL expression .) ]
   ! MINUS           [ reduce using rule 14 (expression -> expression HIGHEROREQUAL expression .) ]
@@ -1358,7 +1421,7 @@ state 44
   ! DIVIDE          [ reduce using rule 14 (expression -> expression HIGHEROREQUAL expression .) ]
 
 
-state 45
+state 48
 
     (15) expression -> expression LOWEROREQUAL expression .
     (6) expression -> expression . PLUS expression
@@ -1389,18 +1452,19 @@ state 45
     BRACELEFT       reduce using rule 15 (expression -> expression LOWEROREQUAL expression .)
     COLON           reduce using rule 15 (expression -> expression LOWEROREQUAL expression .)
     RPAREN          reduce using rule 15 (expression -> expression LOWEROREQUAL expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 15 (expression -> expression LOWEROREQUAL expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 15 (expression -> expression LOWEROREQUAL expression .) ]
   ! MINUS           [ reduce using rule 15 (expression -> expression LOWEROREQUAL expression .) ]
@@ -1416,7 +1480,7 @@ state 45
   ! DIVIDE          [ reduce using rule 15 (expression -> expression LOWEROREQUAL expression .) ]
 
 
-state 46
+state 49
 
     (16) expression -> expression DIFFERENT expression .
     (6) expression -> expression . PLUS expression
@@ -1447,18 +1511,19 @@ state 46
     BRACELEFT       reduce using rule 16 (expression -> expression DIFFERENT expression .)
     COLON           reduce using rule 16 (expression -> expression DIFFERENT expression .)
     RPAREN          reduce using rule 16 (expression -> expression DIFFERENT expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 16 (expression -> expression DIFFERENT expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 16 (expression -> expression DIFFERENT expression .) ]
   ! MINUS           [ reduce using rule 16 (expression -> expression DIFFERENT expression .) ]
@@ -1474,7 +1539,7 @@ state 46
   ! DIVIDE          [ reduce using rule 16 (expression -> expression DIFFERENT expression .) ]
 
 
-state 47
+state 50
 
     (17) expression -> expression DIVIDE expression .
     (6) expression -> expression . PLUS expression
@@ -1505,18 +1570,19 @@ state 47
     BRACELEFT       reduce using rule 17 (expression -> expression DIVIDE expression .)
     COLON           reduce using rule 17 (expression -> expression DIVIDE expression .)
     RPAREN          reduce using rule 17 (expression -> expression DIVIDE expression .)
-    PLUS            shift and go to state 19
-    MINUS           shift and go to state 20
-    TIMES           shift and go to state 21
-    OR              shift and go to state 22
-    AND             shift and go to state 23
-    EQUALS          shift and go to state 24
-    LOWER           shift and go to state 25
-    HIGHER          shift and go to state 26
-    HIGHEROREQUAL   shift and go to state 27
-    LOWEROREQUAL    shift and go to state 28
-    DIFFERENT       shift and go to state 29
-    DIVIDE          shift and go to state 30
+    TO              reduce using rule 17 (expression -> expression DIVIDE expression .)
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
 
   ! PLUS            [ reduce using rule 17 (expression -> expression DIVIDE expression .) ]
   ! MINUS           [ reduce using rule 17 (expression -> expression DIVIDE expression .) ]
@@ -1532,7 +1598,7 @@ state 47
   ! DIVIDE          [ reduce using rule 17 (expression -> expression DIVIDE expression .) ]
 
 
-state 48
+state 51
 
     (18) expression -> LPAREN expression RPAREN .
 
@@ -1551,16 +1617,48 @@ state 48
     DIVIDE          reduce using rule 18 (expression -> LPAREN expression RPAREN .)
     COLON           reduce using rule 18 (expression -> LPAREN expression RPAREN .)
     RPAREN          reduce using rule 18 (expression -> LPAREN expression RPAREN .)
+    TO              reduce using rule 18 (expression -> LPAREN expression RPAREN .)
 
 
-state 49
+state 52
 
     (23) statement -> WHILE expression BRACELEFT statement . BRACERIGHT
 
-    BRACERIGHT      shift and go to state 52
+    BRACERIGHT      shift and go to state 56
 
 
-state 50
+state 53
+
+    (24) statement -> FOR NAME FROM expression . TO expression BRACELEFT statement BRACERIGHT
+    (6) expression -> expression . PLUS expression
+    (7) expression -> expression . MINUS expression
+    (8) expression -> expression . TIMES expression
+    (9) expression -> expression . OR expression
+    (10) expression -> expression . AND expression
+    (11) expression -> expression . EQUALS expression
+    (12) expression -> expression . LOWER expression
+    (13) expression -> expression . HIGHER expression
+    (14) expression -> expression . HIGHEROREQUAL expression
+    (15) expression -> expression . LOWEROREQUAL expression
+    (16) expression -> expression . DIFFERENT expression
+    (17) expression -> expression . DIVIDE expression
+
+    TO              shift and go to state 57
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
+
+
+state 54
 
     (5) statement -> PRINT LPAREN expression RPAREN COLON .
 
@@ -1568,11 +1666,12 @@ state 50
     PRINT           reduce using rule 5 (statement -> PRINT LPAREN expression RPAREN COLON .)
     IF              reduce using rule 5 (statement -> PRINT LPAREN expression RPAREN COLON .)
     WHILE           reduce using rule 5 (statement -> PRINT LPAREN expression RPAREN COLON .)
+    FOR             reduce using rule 5 (statement -> PRINT LPAREN expression RPAREN COLON .)
     $end            reduce using rule 5 (statement -> PRINT LPAREN expression RPAREN COLON .)
     BRACERIGHT      reduce using rule 5 (statement -> PRINT LPAREN expression RPAREN COLON .)
 
 
-state 51
+state 55
 
     (21) statement -> IF expression BRACELEFT statement BRACERIGHT .
     (22) statement -> IF expression BRACELEFT statement BRACERIGHT . ELSE BRACELEFT statement BRACERIGHT
@@ -1581,12 +1680,13 @@ state 51
     PRINT           reduce using rule 21 (statement -> IF expression BRACELEFT statement BRACERIGHT .)
     IF              reduce using rule 21 (statement -> IF expression BRACELEFT statement BRACERIGHT .)
     WHILE           reduce using rule 21 (statement -> IF expression BRACELEFT statement BRACERIGHT .)
+    FOR             reduce using rule 21 (statement -> IF expression BRACELEFT statement BRACERIGHT .)
     $end            reduce using rule 21 (statement -> IF expression BRACELEFT statement BRACERIGHT .)
     BRACERIGHT      reduce using rule 21 (statement -> IF expression BRACELEFT statement BRACERIGHT .)
-    ELSE            shift and go to state 53
+    ELSE            shift and go to state 58
 
 
-state 52
+state 56
 
     (23) statement -> WHILE expression BRACELEFT statement BRACERIGHT .
 
@@ -1594,18 +1694,75 @@ state 52
     PRINT           reduce using rule 23 (statement -> WHILE expression BRACELEFT statement BRACERIGHT .)
     IF              reduce using rule 23 (statement -> WHILE expression BRACELEFT statement BRACERIGHT .)
     WHILE           reduce using rule 23 (statement -> WHILE expression BRACELEFT statement BRACERIGHT .)
+    FOR             reduce using rule 23 (statement -> WHILE expression BRACELEFT statement BRACERIGHT .)
     $end            reduce using rule 23 (statement -> WHILE expression BRACELEFT statement BRACERIGHT .)
     BRACERIGHT      reduce using rule 23 (statement -> WHILE expression BRACELEFT statement BRACERIGHT .)
 
 
-state 53
+state 57
+
+    (24) statement -> FOR NAME FROM expression TO . expression BRACELEFT statement BRACERIGHT
+    (6) expression -> . expression PLUS expression
+    (7) expression -> . expression MINUS expression
+    (8) expression -> . expression TIMES expression
+    (9) expression -> . expression OR expression
+    (10) expression -> . expression AND expression
+    (11) expression -> . expression EQUALS expression
+    (12) expression -> . expression LOWER expression
+    (13) expression -> . expression HIGHER expression
+    (14) expression -> . expression HIGHEROREQUAL expression
+    (15) expression -> . expression LOWEROREQUAL expression
+    (16) expression -> . expression DIFFERENT expression
+    (17) expression -> . expression DIVIDE expression
+    (18) expression -> . LPAREN expression RPAREN
+    (19) expression -> . NUMBER
+    (20) expression -> . NAME
+
+    LPAREN          shift and go to state 13
+    NUMBER          shift and go to state 14
+    NAME            shift and go to state 15
+
+    expression                     shift and go to state 59
+
+state 58
 
     (22) statement -> IF expression BRACELEFT statement BRACERIGHT ELSE . BRACELEFT statement BRACERIGHT
 
-    BRACELEFT       shift and go to state 54
+    BRACELEFT       shift and go to state 60
 
 
-state 54
+state 59
+
+    (24) statement -> FOR NAME FROM expression TO expression . BRACELEFT statement BRACERIGHT
+    (6) expression -> expression . PLUS expression
+    (7) expression -> expression . MINUS expression
+    (8) expression -> expression . TIMES expression
+    (9) expression -> expression . OR expression
+    (10) expression -> expression . AND expression
+    (11) expression -> expression . EQUALS expression
+    (12) expression -> expression . LOWER expression
+    (13) expression -> expression . HIGHER expression
+    (14) expression -> expression . HIGHEROREQUAL expression
+    (15) expression -> expression . LOWEROREQUAL expression
+    (16) expression -> expression . DIFFERENT expression
+    (17) expression -> expression . DIVIDE expression
+
+    BRACELEFT       shift and go to state 61
+    PLUS            shift and go to state 21
+    MINUS           shift and go to state 22
+    TIMES           shift and go to state 23
+    OR              shift and go to state 24
+    AND             shift and go to state 25
+    EQUALS          shift and go to state 26
+    LOWER           shift and go to state 27
+    HIGHER          shift and go to state 28
+    HIGHEROREQUAL   shift and go to state 29
+    LOWEROREQUAL    shift and go to state 30
+    DIFFERENT       shift and go to state 31
+    DIVIDE          shift and go to state 32
+
+
+state 60
 
     (22) statement -> IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT . statement BRACERIGHT
     (4) statement -> . NAME EQUAL expression COLON
@@ -1613,22 +1770,49 @@ state 54
     (21) statement -> . IF expression BRACELEFT statement BRACERIGHT
     (22) statement -> . IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT
     (23) statement -> . WHILE expression BRACELEFT statement BRACERIGHT
+    (24) statement -> . FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT
 
     NAME            shift and go to state 4
     PRINT           shift and go to state 5
     IF              shift and go to state 6
     WHILE           shift and go to state 7
+    FOR             shift and go to state 8
 
-    statement                      shift and go to state 55
+    statement                      shift and go to state 62
 
-state 55
+state 61
+
+    (24) statement -> FOR NAME FROM expression TO expression BRACELEFT . statement BRACERIGHT
+    (4) statement -> . NAME EQUAL expression COLON
+    (5) statement -> . PRINT LPAREN expression RPAREN COLON
+    (21) statement -> . IF expression BRACELEFT statement BRACERIGHT
+    (22) statement -> . IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT
+    (23) statement -> . WHILE expression BRACELEFT statement BRACERIGHT
+    (24) statement -> . FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT
+
+    NAME            shift and go to state 4
+    PRINT           shift and go to state 5
+    IF              shift and go to state 6
+    WHILE           shift and go to state 7
+    FOR             shift and go to state 8
+
+    statement                      shift and go to state 63
+
+state 62
 
     (22) statement -> IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement . BRACERIGHT
 
-    BRACERIGHT      shift and go to state 56
+    BRACERIGHT      shift and go to state 64
 
 
-state 56
+state 63
+
+    (24) statement -> FOR NAME FROM expression TO expression BRACELEFT statement . BRACERIGHT
+
+    BRACERIGHT      shift and go to state 65
+
+
+state 64
 
     (22) statement -> IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT .
 
@@ -1636,48 +1820,26 @@ state 56
     PRINT           reduce using rule 22 (statement -> IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT .)
     IF              reduce using rule 22 (statement -> IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT .)
     WHILE           reduce using rule 22 (statement -> IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT .)
+    FOR             reduce using rule 22 (statement -> IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT .)
     $end            reduce using rule 22 (statement -> IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT .)
     BRACERIGHT      reduce using rule 22 (statement -> IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT .)
+
+
+state 65
+
+    (24) statement -> FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT .
+
+    NAME            reduce using rule 24 (statement -> FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT .)
+    PRINT           reduce using rule 24 (statement -> FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT .)
+    IF              reduce using rule 24 (statement -> FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT .)
+    WHILE           reduce using rule 24 (statement -> FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT .)
+    FOR             reduce using rule 24 (statement -> FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT .)
+    $end            reduce using rule 24 (statement -> FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT .)
+    BRACERIGHT      reduce using rule 24 (statement -> FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for PLUS in state 36 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 36 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 36 resolved as shift
-WARNING: shift/reduce conflict for OR in state 36 resolved as shift
-WARNING: shift/reduce conflict for AND in state 36 resolved as shift
-WARNING: shift/reduce conflict for EQUALS in state 36 resolved as shift
-WARNING: shift/reduce conflict for LOWER in state 36 resolved as shift
-WARNING: shift/reduce conflict for HIGHER in state 36 resolved as shift
-WARNING: shift/reduce conflict for HIGHEROREQUAL in state 36 resolved as shift
-WARNING: shift/reduce conflict for LOWEROREQUAL in state 36 resolved as shift
-WARNING: shift/reduce conflict for DIFFERENT in state 36 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 36 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 37 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 37 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 37 resolved as shift
-WARNING: shift/reduce conflict for OR in state 37 resolved as shift
-WARNING: shift/reduce conflict for AND in state 37 resolved as shift
-WARNING: shift/reduce conflict for EQUALS in state 37 resolved as shift
-WARNING: shift/reduce conflict for LOWER in state 37 resolved as shift
-WARNING: shift/reduce conflict for HIGHER in state 37 resolved as shift
-WARNING: shift/reduce conflict for HIGHEROREQUAL in state 37 resolved as shift
-WARNING: shift/reduce conflict for LOWEROREQUAL in state 37 resolved as shift
-WARNING: shift/reduce conflict for DIFFERENT in state 37 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 37 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 38 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 38 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 38 resolved as shift
-WARNING: shift/reduce conflict for OR in state 38 resolved as shift
-WARNING: shift/reduce conflict for AND in state 38 resolved as shift
-WARNING: shift/reduce conflict for EQUALS in state 38 resolved as shift
-WARNING: shift/reduce conflict for LOWER in state 38 resolved as shift
-WARNING: shift/reduce conflict for HIGHER in state 38 resolved as shift
-WARNING: shift/reduce conflict for HIGHEROREQUAL in state 38 resolved as shift
-WARNING: shift/reduce conflict for LOWEROREQUAL in state 38 resolved as shift
-WARNING: shift/reduce conflict for DIFFERENT in state 38 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 38 resolved as shift
 WARNING: shift/reduce conflict for PLUS in state 39 resolved as shift
 WARNING: shift/reduce conflict for MINUS in state 39 resolved as shift
 WARNING: shift/reduce conflict for TIMES in state 39 resolved as shift
@@ -1786,3 +1948,39 @@ WARNING: shift/reduce conflict for HIGHEROREQUAL in state 47 resolved as shift
 WARNING: shift/reduce conflict for LOWEROREQUAL in state 47 resolved as shift
 WARNING: shift/reduce conflict for DIFFERENT in state 47 resolved as shift
 WARNING: shift/reduce conflict for DIVIDE in state 47 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 48 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 48 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 48 resolved as shift
+WARNING: shift/reduce conflict for OR in state 48 resolved as shift
+WARNING: shift/reduce conflict for AND in state 48 resolved as shift
+WARNING: shift/reduce conflict for EQUALS in state 48 resolved as shift
+WARNING: shift/reduce conflict for LOWER in state 48 resolved as shift
+WARNING: shift/reduce conflict for HIGHER in state 48 resolved as shift
+WARNING: shift/reduce conflict for HIGHEROREQUAL in state 48 resolved as shift
+WARNING: shift/reduce conflict for LOWEROREQUAL in state 48 resolved as shift
+WARNING: shift/reduce conflict for DIFFERENT in state 48 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 48 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 49 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 49 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 49 resolved as shift
+WARNING: shift/reduce conflict for OR in state 49 resolved as shift
+WARNING: shift/reduce conflict for AND in state 49 resolved as shift
+WARNING: shift/reduce conflict for EQUALS in state 49 resolved as shift
+WARNING: shift/reduce conflict for LOWER in state 49 resolved as shift
+WARNING: shift/reduce conflict for HIGHER in state 49 resolved as shift
+WARNING: shift/reduce conflict for HIGHEROREQUAL in state 49 resolved as shift
+WARNING: shift/reduce conflict for LOWEROREQUAL in state 49 resolved as shift
+WARNING: shift/reduce conflict for DIFFERENT in state 49 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 49 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 50 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 50 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 50 resolved as shift
+WARNING: shift/reduce conflict for OR in state 50 resolved as shift
+WARNING: shift/reduce conflict for AND in state 50 resolved as shift
+WARNING: shift/reduce conflict for EQUALS in state 50 resolved as shift
+WARNING: shift/reduce conflict for LOWER in state 50 resolved as shift
+WARNING: shift/reduce conflict for HIGHER in state 50 resolved as shift
+WARNING: shift/reduce conflict for HIGHEROREQUAL in state 50 resolved as shift
+WARNING: shift/reduce conflict for LOWEROREQUAL in state 50 resolved as shift
+WARNING: shift/reduce conflict for DIFFERENT in state 50 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 50 resolved as shift
