@@ -140,7 +140,6 @@ def evalExpr(t):
 
 
 
-
 def p_line(t):
     '''bloc : bloc statement
             | statement '''
@@ -237,7 +236,7 @@ parser = yacc.yacc()
 
 
 # 2 d -> structures itératives : implémenter le for
-s='maVariable = 1; for i from 1 to 5 {maVariable = maVariable + 1;}print(maVariable);'
+#s='maVariable = 1; for i from 1 to 5 {maVariable = maVariable + 1;}print(maVariable);'
 
 
 
