@@ -129,14 +129,18 @@ def evalExpr(t):
     if t[0] == '-': return evalExpr(t[1]) - evalExpr(t[2])
     if t[0] == '*': return evalExpr(t[1]) * evalExpr(t[2])
     if t[0] == '/':
-        if t[2] == 0: return 0 ################### divide by 0
+        if t[2] == 0: return 0
         return evalExpr(t[1]) / evalExpr(t[2])
     if(t[0]) == ">": return evalExpr(t[1]) > evalExpr(t[2])
     if (t[0]) == "<": return evalExpr(t[1]) < evalExpr(t[2])
     if (t[0]) == ">=": return evalExpr(t[1]) >= evalExpr(t[2])
     if (t[0]) == "<=": return evalExpr(t[1]) <= evalExpr(t[2])
     if (t[0]) == "!=": return evalExpr(t[1]) != evalExpr(t[2])
-
+    if isinstance(t, str):  # Si c'est une chaîne, cela représente une variable
+        if t in names:
+            return names[t]
+        else:
+            raise NameError(f"Variable non initialisée : '{t}'")
 
 
 
