@@ -15,7 +15,7 @@ tokens = [
     'NAME','NUMBER','BRACERIGHT','BRACELEFT',
     'PLUS','MINUS','TIMES','DIVIDE',
     'LPAREN','RPAREN', 'COLON', 'AND', 'OR', 'EQUAL', 'EQUALS', 'LOWER','HIGHER',
-    'HIGHEROREQUAL','LOWEROREQUAL','DIFFERENT'
+    'HIGHEROREQUAL','LOWEROREQUAL','DIFFERENT','PLUSEQUAL'
     ]+list(reserved.values())
 
 # Tokens
@@ -42,6 +42,8 @@ t_BRACERIGHT = r'\}'
 t_HIGHEROREQUAL = r'\>='
 t_LOWEROREQUAL = r'\<='
 t_DIFFERENT =  r'\!='
+t_PLUSEQUAL = r'\+='
+
 
 def t_NUMBER(t):
     r'\d+'
@@ -91,6 +93,10 @@ def evalInst(t):
         print('CALC>', evalExpr(t[1]))
     if t[0]=='assign' :
         names[t[1]]=evalExpr(t[2])
+    if t[0] == 'assign_plus_equal':
+        var_name, additional_value = t[1], evalExpr(t[2])
+        if var_name in names:
+            names[var_name] += additional_value
     if t[0]=='bloc' :
         evalInst(t[1])
         evalInst(t[2])
@@ -154,6 +160,7 @@ def p_statement_assign(t):
     'statement : NAME EQUAL expression COLON'
     t[0] = ('assign',t[1], t[3])
 
+
 def p_statement_print(t):
     'statement : PRINT LPAREN expression RPAREN COLON'
     t[0] = ('print',t[3])
@@ -188,17 +195,21 @@ def p_expression_name(t):
     'expression : NAME'
     t[0] = t[1]
 
+def p_statement_assign_plus_equal(t):
+    'statement : NAME PLUSEQUAL expression COLON'
+    t[0] = ('assign_plus_equal', t[1], t[3])
+
 def p_statement_if(t):
-    'statement : IF expression BRACELEFT statement BRACERIGHT'
-    t[0] = ('if', t[2], t[4])
+    'statement : IF LPAREN expression RPAREN BRACELEFT statement BRACERIGHT'
+    t[0] = ('if', t[3], t[6])
 
 def p_statement_if_else(t):
-    'statement : IF expression BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT'
-    t[0] = ('if-else', t[2], t[4], t[8])
+    'statement : IF LPAREN expression RPAREN BRACELEFT statement BRACERIGHT ELSE BRACELEFT statement BRACERIGHT'
+    t[0] = ('if-else', t[3], t[6], t[10])
 
 def p_statement_while(t):
-    'statement : WHILE expression BRACELEFT statement BRACERIGHT'
-    t[0] = ('while', t[2], t[4])
+    'statement : WHILE LPAREN expression RPAREN BRACELEFT statement BRACERIGHT'
+    t[0] = ('while', t[3], t[6])
 
 def p_statement_for(t):
     'statement : FOR NAME FROM expression TO expression BRACELEFT statement BRACERIGHT'
@@ -218,21 +229,21 @@ parser = yacc.yacc()
 
 # 1 -> Votre interpréteur devra gérer les noms de variables à plusieurs caractères.
 # 2 a -> affectation || b -> affichage d’expressions numériques
-#s='maVariable = 12; print(maVariable);'
+#s='maVariable = 12; maVariable = maVariable + 5; print(maVariable);'
 
+# 2 a -> affectation élargie :
 
-########### DOIT PRENDRE DES STRIG ? ##################
-
+s='x = 1; x+= 1; print(x);'
 
 # 2 c -> instructions conditionnelles : implémenter le si-alors
-#s='maVariable = 23041999; if maVariable < 1 {maVariable = 12;}print(maVariable);'
+#s='maVariable = 23041999; if (maVariable < 1) {maVariable = 12;}print(maVariable);'
 
 # 2 c -> instructions conditionnelles : implémenter si-alors-sinon
-#s='maVariable = 23041999; if maVariable < 1 {maVariable = 12;} else {maVariable = 0;}print(maVariable);'
+#s='maVariable = 23041999; if (maVariable < 1) {maVariable = 12;} else {maVariable = 0;}print(maVariable);'
 
 
 # 2 d -> structures itératives : implémenter le while
-#s='maVariable = 10; while maVariable < 15 {maVariable = maVariable + 1;}print(maVariable);'
+#s='maVariable = 10; while (maVariable < 15) {maVariable = maVariable + 1;}print(maVariable);'
 
 
 # 2 d -> structures itératives : implémenter le for
@@ -254,3 +265,6 @@ parser.parse(s)
 
 #Afficher les valeurs
 #print(names)
+
+
+## Revoir l'affectation élargie (-=,++) , la syntaxe de for, les && ||, deux variables ?
