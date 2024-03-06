@@ -9,6 +9,7 @@ I wrote a function, affected the function into a variable and then called the va
 ![Capture d’écran 2024-03-06 à 23 02 10](https://github.com/clemzouuu/Esengo/assets/92720413/0bb41edd-de46-4544-b901-0309c31673a5)
 
 Here is the result : 
+
 ![Capture d’écran 2024-03-06 à 23 02 14](https://github.com/clemzouuu/Esengo/assets/92720413/e3d37e75-df10-4da2-98dc-0a5581ed569b)
 
 After every call, a syntax tree is created, here is the function's tree : 
